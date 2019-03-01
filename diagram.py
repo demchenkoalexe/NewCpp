@@ -1,11 +1,14 @@
+#! /usr/bin/env python
+# -*- coding: utf-8 -*-
+
 from defs import *
 from scaner import Scaner
-from tree_2 import *
+#from tree_2 import *
 
 class Diagram():
 	def __init__(self, text_file):
 		self.scaner = Scaner(text_file) #Инициализация сканера
-		self.__tree = SemTree()  # инициализация семантического дерева
+		#self.__tree = SemTree()  # инициализация семантического дерева
 
 	#Описания
 	def S(self):

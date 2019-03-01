@@ -1,5 +1,7 @@
+#! /usr/bin/env python
+# -*- coding: utf-8 -*-
+
 from defs import *
-from goto import with_goto
 import sys
 
 class Scaner():
@@ -36,41 +38,46 @@ class Scaner():
 		self.current_position = c_p
 
 	#Сканер
-	@with_goto
 	def scan(self):
 		_type = 0 #Тип лексемы
 
 		self._lex = [] #Очищаем лексему
 
-		label .begin #Метка пропуска комментариев
+		#Флаг пропуска ненужных символов
+		f = True
 
-		#Пропуск пробелов, табуляций и переносов строки
-		while (self.text_file[self.current_position] == ' ' or self.text_file[self.current_position] == '\t' or self.text_file[self.current_position] == '\n'):
-			self.current_position += 1
+		while (f):
+			f = False
 
-		"""
-			Многострочные комментарии - их пропускаем. 
-			Если комментарий начался, но не закончился весь код считаем ошибкой.
-		"""
-		if (self.text_file[self.current_position] == '/' and self.text_file[self.current_position + 1] == '*'):
-			self.current_position += 2
-			_type = ERROR #Если комментарий так и не закончится, вернём ошибку лексемы
-			while (not (self.text_file[self.current_position] == '*' and self.text_file[self.current_position + 1] == '/')):
+			#Пропуск пробелов, табуляций и переносов строки
+			while (self.text_file[self.current_position] == ' ' or self.text_file[self.current_position] == '\t' or self.text_file[self.current_position] == '\n'):
 				self.current_position += 1
-				if self.text_file[self.current_position + 1] == '\0':
-					self.printError('ERROR! Endless comment!')
+
+			"""
+				Многострочные комментарии - их пропускаем. 
+				Если комментарий начался, но не закончился весь код считаем ошибкой.
+			"""
+			if (self.text_file[self.current_position] == '/' and self.text_file[self.current_position + 1] == '*'):
+				self.current_position += 2
+				_type = ERROR #Если комментарий так и не закончится, вернём ошибку лексемы
+				while (not (self.text_file[self.current_position] == '*' and self.text_file[self.current_position + 1] == '/')):
 					self.current_position += 1
-					return _type
-			self.current_position += 2
-			_type = 0
-			goto .begin
+					if self.text_file[self.current_position + 1] == '\0':
+						self.printError('ERROR! Endless comment!')
+						self.current_position += 1
+						return _type
+				self.current_position += 2
+				_type = 0
+				f = True
+				continue
 
-		#Пропуск однострочного комментария
-		if (self.text_file[self.current_position] == '/' and self.text_file[self.current_position + 1] == '/'):
-			self.current_position += 2
-			while self.text_file[self.current_position] != '\n':
-				self.current_position += 1
-			goto .begin
+			#Пропуск однострочного комментария
+			if (self.text_file[self.current_position] == '/' and self.text_file[self.current_position + 1] == '/'):
+				self.current_position += 2
+				while self.text_file[self.current_position] != '\n':
+					self.current_position += 1
+				f = True
+				continue
 				
 		#Конец файла. Конец сканирования.
 		if self.text_file[self.current_position] == '\0':
