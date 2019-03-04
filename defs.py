@@ -51,3 +51,5 @@ END = 70
 ERROR = 71
 
 UNKNOWN = 80
+
+IDENTITY = {1: 'int', 2: '_int64', 4: 'void'}

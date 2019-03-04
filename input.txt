@@ -3,8 +3,9 @@ _int64 abc = 0x213, dkc = 0XFF4E; //VAAAAAAAAAAAAR
 
 void main()
 {
-	k_er = 12;
-	for ( i = 0; i < k_er; i ++ )
+	{int k_er = 12;}
+	int k;
+	for ( i = 0; i < k; i ++ )
 	{
 		abc = abc >> 4;
 		dkc = dkc << 5;
@@ -12,7 +13,7 @@ void main()
 		abc += 2;
 		dkc -= 3;
 		abc /= 2;
-		dk %= 7;
+		dkc %= 7;
 		abc = abc - j;             
 		dkc = dkc + j;
 		dkc = abc % 1; 

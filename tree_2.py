@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 from defs import *
+import copy
 
 MAXK = 100 #Максимальное число вершин дерева
 EMPTY = -1 #Признак пустой ссылки
@@ -9,7 +10,7 @@ EMPTY = -1 #Признак пустой ссылки
 class Node:
 	def __init__(self):
 		self.type_id = '' #идентификатор переменной
-		self.DataType = 0 #тип значения
+		self.DataType = EMPTY #тип значения
 		self.data = None #значение 
 
 class Tree:
@@ -27,7 +28,7 @@ class Tree:
 		self.right.append(EMPTY)
 
 		first = Node()
-		first.type_id = "------"
+		first.type_id = "-"
 		first.DataType = EMPTY
 		self.n.append(first)
 		self.__next += 1
@@ -39,7 +40,7 @@ class Tree:
 		self.left.append(EMPTY)
 		self.right.append(EMPTY) 
 		# Записали информацию в новую вершину
-		self.n.append(Data)
+		self.n.append(copy.copy(Data))
 
 		# Связали From с новой вершиной
 		if ( From != EMPTY ):
@@ -54,7 +55,7 @@ class Tree:
 		self.left.append(EMPTY)
 		self.right.append(EMPTY) 
 		# Записали информацию в новую вершину
-		self.n.append(Data)
+		self.n.append(copy.copy(Data))
 
 		# Связали From с новой вершиной
 		if ( From != EMPTY ):
@@ -66,7 +67,7 @@ class Tree:
 	def findUp(self, From, type_id):
 		# Текущая вершина поиска
 		i = From
-		while ( ( i != EMPTY ) and ( type_id == self.n[i].type_id ) ):
+		while ( ( i != EMPTY ) and ( type_id != self.n[i].type_id ) ):
 			i = self.up[i] # поднимаемся наверх по связям
 
 		if ( i == EMPTY ):
@@ -90,24 +91,35 @@ class Tree:
 		if ( self.dupControl(self.__next - 1, a) ):
 			return "Повторное описание идентификатора " + str(a)
 		newID = Node()
-		if ( t != VOID ):
-			newID.id = a
+		if ( t != IDENTITY[VOID] ):
+			newID.type_id = a
 			newID.DataType = t
 			self.setLeft(self.__next - 1, newID)   # создали вершину - переменную
 			return self.__next - 1
 		else:
-			newID.id = a
+			newID.type_id = a
 			newID.DataType = t
 			self.setLeft(self.__next - 1, newID) # создали вершину - функцию
-			newID2 = Node()
-			newID2.id = "-----"
-			newID2.DataType = EMPTY
-			self.setRight(self.__next - 1, newID2) # создали пустую вершину
-			return self.__next - 2
+			return self.__next - 1
+
+	# инициализация следующего уровня дерева
+	def nextLavel(self):
+		newID2 = Node()
+		newID2.type_id = "-"
+		newID2.DataType = EMPTY
+		self.setRight(self.__next - 1, newID2) # создали пустую вершину
+
+	# вернуться на предыдущий уровень дерева
+	def prevLavel(self):
+		i = self.__next - 1
+		while ( i != EMPTY ):
+			i = self.up[i] # поднимаемся наверх по связям
+		self.__next = i
+
 
 	#Установить тип t для переменной по адресу addr
 	def semSetType(self, addr, t):
-		self.n[addr].DataType = t
+		self.n[addr].type_id = t
 
 	# Найти в таблице переменную с именем a
 	# и вернуть ссылку на соответсвующий элемент дерева
@@ -115,7 +127,7 @@ class Tree:
 		v = self.findUp(self.__next - 1, a)
 		if ( v == EMPTY ):
 			return "Отсутсвует описание идентификатора " + str(a)
-		if ( self.n[v].DataType == VOID ):
+		if ( self.n[v].DataType == IDENTITY[VOID] ):
 			return "Неверное использование вызова функции " + str(a)
 		return v
 
@@ -125,8 +137,17 @@ class Tree:
 		v = self.findUp(self.__next - 1, a)
 		if ( v == EMPTY ):
 			return "Отсутсвует описание функции " + str(a)
-		if ( self.n[v].DataType != VOID ):
+		if ( self.n[v].DataType != IDENTITY[VOID] ):
 			return "Не является функцией идентификатор " + str(a)
 		return v
 
+	def print(self):
+		countSpace = 0
+		for i in self.n:
+			if i.type_id == "-":
+				countSpace += 3
+				continue
+			for j in range(countSpace):
+				print(' ', end = '')
+			print(str(i.type_id) + ' (' + str(i.DataType) + ')')
 

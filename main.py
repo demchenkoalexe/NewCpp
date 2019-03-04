@@ -27,5 +27,8 @@ def main():
 		_type = scaner.scan()
 		print(_type, '-->', ''.join(scaner.get_lex()))
 
+	print('\nTree: ')
+	dg.printTree()
+
 if __name__ == "__main__":
 	main()

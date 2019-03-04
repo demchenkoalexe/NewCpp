@@ -9,6 +9,7 @@ class Diagram():
 	def __init__(self, text_file):
 		self.scaner = Scaner(text_file) #Инициализация сканера
 		self.__tree = Tree()  # инициализация семантического дерева
+		self.curType = '' # текущий тип идентификатора для синтаксического дерева
 
 	#Описания
 	def S(self):
@@ -45,6 +46,8 @@ class Diagram():
 			print(_type)
 			self.scaner.printError("ERROR! Expected int or _int64.")
 
+		self.curType = IDENTITY[_type]
+
 		self.D();
 
 		_type = self.scaner.scan() #Получить текущую лексему
@@ -75,8 +78,8 @@ class Diagram():
 		if ( _type != ID ):
 			self.scaner.printError("ERROR! Expected identifier.")
 
-		# Занесение идентификатора в таблицу с типом UNKNOWN
-		v = self.__tree.semInclude(_type, UNKNOWN)
+		# Занесение идентификатора в таблицу с типом curType
+		v = self.__tree.semInclude(''.join(self.scaner.get_lex()), self.curType)
 		if ( type(v) == str ):
 			self.scaner.printError(v)
 
@@ -115,7 +118,7 @@ class Diagram():
 			self.scaner.printError("ERROR! Expected identifier.")
 
 		# Занесение имя функции в таблицу
-		v = self.__tree.semInclude(_type, VOID)
+		v = self.__tree.semInclude(''.join(self.scaner.get_lex()), IDENTITY[VOID])
 		if ( type(v) == str ):
 			self.scaner.printError(v)
 
@@ -134,10 +137,12 @@ class Diagram():
 		_type = self.scaner.scan() #Получить текущую лексему
 		if ( _type != LBRACE ):
 			self.scaner.printError("ERROR! Expected left brace.")
+		self.__tree.nextLavel()
 		self.O()
 		_type = self.scaner.scan() #Получить текущую лексему
 		if ( _type != RBRACE ):
 			self.scaner.printError("ERROR! Expected right brace.")
+		self.__tree.prevLavel()
 
 	#Операторы и описания
 	def O(self):
@@ -167,10 +172,17 @@ class Diagram():
 		elif ( _type == SEMICOLON ):
 			return #пустой оператор
 		elif ( _type == ID ):
-			# Поиск имени функции в таблице
-			v = self.__tree.semGetFunct(_type)
-			if ( type(v) == str ):
-				self.scaner.printError(v)
+			# Поиск имени функции и переменной в таблице
+			v1 = self.__tree.semGetType(''.join(self.scaner.get_lex()))
+			v = self.__tree.semGetFunct(''.join(self.scaner.get_lex()))
+			if ( type(v) == str and type(v1) == str ):
+				self.__tree.print()
+				_type = self.scaner.scan() #Получить текущую лексему
+				if ( _type == LBRACKET ):
+					self.scaner.printError(v)
+				else:
+					self.scaner.printError(v1)
+
 
 			_type = self.scaner.scan() #Получить текущую лексему
 			if ( _type == LBRACKET ):
@@ -223,7 +235,7 @@ class Diagram():
 
 		if ( _type == ID ):
 			# Поиск имени идентификатора в таблице
-			v = self.__tree.semGetType(_type)
+			v = self.__tree.semGetType(''.join(self.scaner.get_lex()))
 			if ( type(v) == str ):
 				self.scaner.printError(v)
 
@@ -244,7 +256,7 @@ class Diagram():
 			if ( _type != ID ):
 				self.scaner.printError("ERROR! Expected identifier.")
 			# Поиск имени идентификатора в таблице
-			v = self.__tree.semGetType(_type)
+			v = self.__tree.semGetType(''.join(self.scaner.get_lex()))
 			if ( type(v) == str ):
 				self.scaner.printError(v)
 
@@ -298,7 +310,7 @@ class Diagram():
 
 		if ( _type == ID ):
 			# Поиск имени идентификатора в таблице
-			v = self.__tree.semGetType(_type)
+			v = self.__tree.semGetType(''.join(self.scaner.get_lex()))
 			if ( type(v) == str ):
 				self.scaner.printError(v)
 
@@ -320,3 +332,6 @@ class Diagram():
 				self.scaner.printError("ERROR! Expected right bracket.")
 		elif ( _type == CONSTINT or _type == CONSTINT16 ):
 			return
+
+	def printTree(self):
+		self.__tree.print()
