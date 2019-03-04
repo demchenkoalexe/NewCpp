@@ -49,3 +49,5 @@ SAVE = 60
 
 END = 70
 ERROR = 71
+
+UNKNOWN = 80

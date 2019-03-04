@@ -3,12 +3,12 @@
 
 from defs import *
 from scaner import Scaner
-#from tree_2 import *
+from tree_2 import *
 
 class Diagram():
 	def __init__(self, text_file):
 		self.scaner = Scaner(text_file) #Инициализация сканера
-		#self.__tree = SemTree()  # инициализация семантического дерева
+		self.__tree = Tree()  # инициализация семантического дерева
 
 	#Описания
 	def S(self):
@@ -75,6 +75,11 @@ class Diagram():
 		if ( _type != ID ):
 			self.scaner.printError("ERROR! Expected identifier.")
 
+		# Занесение идентификатора в таблицу с типом UNKNOWN
+		v = self.__tree.semInclude(_type, UNKNOWN)
+		if ( type(v) == str ):
+			self.scaner.printError(v)
+
 		c_p = self.scaner.get_current_position() #Запомнить текущую позицию
 		_type = self.scaner.scan() #Получить текущую лексему
 		if ( _type == SAVE ):
@@ -108,6 +113,11 @@ class Diagram():
 		_type = self.scaner.scan() #Получить текущую лексему
 		if ( _type != ID ):
 			self.scaner.printError("ERROR! Expected identifier.")
+
+		# Занесение имя функции в таблицу
+		v = self.__tree.semInclude(_type, VOID)
+		if ( type(v) == str ):
+			self.scaner.printError(v)
 
 		_type = self.scaner.scan() #Получить текущую лексему
 		if ( _type != LBRACKET ):
@@ -157,6 +167,11 @@ class Diagram():
 		elif ( _type == SEMICOLON ):
 			return #пустой оператор
 		elif ( _type == ID ):
+			# Поиск имени функции в таблице
+			v = self.__tree.semGetFunct(_type)
+			if ( type(v) == str ):
+				self.scaner.printError(v)
+
 			_type = self.scaner.scan() #Получить текущую лексему
 			if ( _type == LBRACKET ):
 				_type = self.scaner.scan() #Получить текущую лексему
@@ -207,6 +222,11 @@ class Diagram():
 			self.scaner.printError("ERROR! Expected assignment (identifier, ++ or --).")
 
 		if ( _type == ID ):
+			# Поиск имени идентификатора в таблице
+			v = self.__tree.semGetType(_type)
+			if ( type(v) == str ):
+				self.scaner.printError(v)
+
 			_type = self.scaner.scan() #Получить текущую лексему
 
 			if ( _type != SAVE and _type != PLUSEQ and _type != MINUSEQ and _type != MULTEQ 
@@ -223,6 +243,10 @@ class Diagram():
 			_type = self.scaner.scan() #Получить текущую лексему
 			if ( _type != ID ):
 				self.scaner.printError("ERROR! Expected identifier.")
+			# Поиск имени идентификатора в таблице
+			v = self.__tree.semGetType(_type)
+			if ( type(v) == str ):
+				self.scaner.printError(v)
 
 	#Выражение
 	def A(self):
@@ -273,6 +297,11 @@ class Diagram():
 			self.scaner.printError("ERROR! Expected identifier, left bracket or integer constant dec or hex.")
 
 		if ( _type == ID ):
+			# Поиск имени идентификатора в таблице
+			v = self.__tree.semGetType(_type)
+			if ( type(v) == str ):
+				self.scaner.printError(v)
+
 			c_p = self.scaner.get_current_position() #Запомнить текущую позицию
 			_type = self.scaner.scan() #Получить текущую лексему
 			if ( _type != LSBRACKET ):

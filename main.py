@@ -4,7 +4,7 @@
 from defs import *
 from scaner import Scaner
 from diagram import Diagram
-#from tree_2 import *
+from tree_2 import *
 
 def main():
 	_type = '' #Тип лексемы
