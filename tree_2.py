@@ -11,7 +11,8 @@ class Node:
 	def __init__(self):
 		self.type_id = '' #идентификатор переменной
 		self.DataType = EMPTY #тип значения
-		self.data = None #значение 
+		self.data = None #значение
+		self.__lavel = 0 # для печати дерева 
 
 class Tree:
 	def __init__(self):
@@ -22,6 +23,8 @@ class Tree:
 
 		self.__root = 0 #корень дерева
 		self.__next = 0 #следующий заполняемый элемент в массиве
+		self.__parent = 0 # следующий родитель
+		self.__lavel = 0 # уровень для печати дерева
 
 		self.up.append(EMPTY)
 		self.left.append(EMPTY)
@@ -30,8 +33,10 @@ class Tree:
 		first = Node()
 		first.type_id = "-"
 		first.DataType = EMPTY
+		first.__lavel = 1
 		self.n.append(first)
 		self.__next += 1
+		self.__lavel += 1
 
 	# Создать левого потомка от вершины From
 	def setLeft(self, From, Data):
@@ -47,6 +52,7 @@ class Tree:
 			self.left[From] = self.__next
 
 		self.__next += 1
+		self.__parent += 1
 
 	# Создать левого потомка от вершины From
 	def setRight(self, From, Data):
@@ -62,6 +68,7 @@ class Tree:
 			self.right[From] = self.__next
 
 		self.__next += 1
+		self.__parent += 1
 
 	# Поиск данных в дереве до его корня вверх по связям
 	def findUp(self, From, type_id):
@@ -94,12 +101,14 @@ class Tree:
 		if ( t != IDENTITY[VOID] ):
 			newID.type_id = a
 			newID.DataType = t
-			self.setLeft(self.__next - 1, newID)   # создали вершину - переменную
+			newID.__lavel = self.__lavel
+			self.setLeft(self.__parent, newID)   # создали вершину - переменную
 			return self.__next - 1
 		else:
 			newID.type_id = a
 			newID.DataType = t
-			self.setLeft(self.__next - 1, newID) # создали вершину - функцию
+			newID.__lavel = self.__lavel
+			self.setLeft(self.__parent, newID) # создали вершину - функцию
 			return self.__next - 1
 
 	# инициализация следующего уровня дерева
@@ -107,15 +116,16 @@ class Tree:
 		newID2 = Node()
 		newID2.type_id = "-"
 		newID2.DataType = EMPTY
-		self.setRight(self.__next - 1, newID2) # создали пустую вершину
+		self.setRight(self.__parent, newID2) # создали пустую вершину
+		self.__lavel += 1
 
 	# вернуться на предыдущий уровень дерева
 	def prevLavel(self):
-		i = self.__next - 1
-		while ( i != EMPTY ):
+		i = self.__parent
+		while ( self.n[i].DataType != EMPTY ):
 			i = self.up[i] # поднимаемся наверх по связям
-		self.__next = i
-
+		self.__parent = i - 1
+		self.__lavel -= 1
 
 	#Установить тип t для переменной по адресу addr
 	def semSetType(self, addr, t):
@@ -142,12 +152,10 @@ class Tree:
 		return v
 
 	def print(self):
-		countSpace = 0
 		for i in self.n:
 			if i.type_id == "-":
-				countSpace += 3
 				continue
-			for j in range(countSpace):
+			for j in range(i.__lavel * 2):
 				print(' ', end = '')
 			print(str(i.type_id) + ' (' + str(i.DataType) + ')')
 

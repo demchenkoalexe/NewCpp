@@ -73,15 +73,26 @@ class Diagram():
 
 	#Переменная, массив и индекс
 	def Z(self):
+		c_p = self.scaner.get_current_position() #Запомнить текущую позицию
 		_type = self.scaner.scan() #Получить текущую лексему
 
 		if ( _type != ID ):
 			self.scaner.printError("ERROR! Expected identifier.")
 
-		# Занесение идентификатора в таблицу с типом curType
-		v = self.__tree.semInclude(''.join(self.scaner.get_lex()), self.curType)
-		if ( type(v) == str ):
-			self.scaner.printError(v)
+		_type = self.scaner.scan() #Получить текущую лексему
+		self.scaner.set_current_position(c_p) #Вернуть старую позицию
+		if ( _type == LSBRACKET ):
+			_type = self.scaner.scan() #Получить текущую лексему
+			# Занесение идентификатора массива в таблицу с типом curType
+			v = self.__tree.semInclude(''.join(self.scaner.get_lex()), self.curType + str('[]'))
+			if ( type(v) == str ):
+				self.scaner.printError(v)
+		else:
+			_type = self.scaner.scan() #Получить текущую лексему
+			# Занесение идентификатора в таблицу с типом curType
+			v = self.__tree.semInclude(''.join(self.scaner.get_lex()), self.curType)
+			if ( type(v) == str ):
+				self.scaner.printError(v)
 
 		c_p = self.scaner.get_current_position() #Запомнить текущую позицию
 		_type = self.scaner.scan() #Получить текущую лексему
@@ -189,6 +200,15 @@ class Diagram():
 				_type = self.scaner.scan() #Получить текущую лексему
 				if ( _type != RBRACKET ):
 					self.scaner.printError("ERROR! Expected right bracket.")
+			elif ( _type == LSBRACKET ):				
+				_type = self.scaner.scan() #Получить текущую лексему
+				if ( _type != CONSTINT and _type != CONSTINT16 ):
+					self.scaner.printError("ERROR! The array has no index.")
+				_type = self.scaner.scan() #Получить текущую лексему
+				if ( _type != RSBRACKET ):
+					self.scaner.printError("ERROR! Expected right square bracket.")
+				self.scaner.set_current_position(c_p) #Вернуть старую позицию
+				self.U()
 			else:
 				self.scaner.set_current_position(c_p) #Вернуть старую позицию
 				self.U()
@@ -239,11 +259,22 @@ class Diagram():
 			if ( type(v) == str ):
 				self.scaner.printError(v)
 
+			c_p = self.scaner.get_current_position() #Запомнить текущую позицию
 			_type = self.scaner.scan() #Получить текущую лексему
+			if ( _type == LSBRACKET ):
+				_type = self.scaner.scan() #Получить текущую лексему
+				if ( _type == CONSTINT16 or _type == CONSTINT ):
+					_type = self.scaner.scan() #Получить текущую лексему
+					if ( _type == RSBRACKET ):
+						_type = self.scaner.scan() #Получить текущую лексему
+			else:
+				self.scaner.set_current_position(c_p) #Вернуть старую позицию
+				_type = self.scaner.scan() #Получить текущую лексему
 
 			if ( _type != SAVE and _type != PLUSEQ and _type != MINUSEQ and _type != MULTEQ 
 				and _type != DIVEQ and _type != MODEQ and _type != PLUSPLUS and _type != MINUSMINUS ):
-				self.scaner.printError("ERROR! Expected assignment (=, +=, -=, *=. %=, /=, ++ or --).")
+				print(_type)
+				self.scaner.printError("ERROR! Expected assignment (=, +=, -=, *=, %=, /=, ++ or --).")
 
 			if ( _type == SAVE or _type == PLUSEQ or _type == MINUSEQ or _type == MULTEQ 
 				or _type == DIVEQ or _type == MODEQ ):
