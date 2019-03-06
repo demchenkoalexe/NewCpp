@@ -1,7 +1,7 @@
 int i, j = 0, m[];
 _int64 abc = 0x213, dkc = 0XFF4E; //VAAAAAAAAAAAAR
 
-void main()
+void main() 
 {
 	m[10] = 10;
 	{
