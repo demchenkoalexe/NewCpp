@@ -1,6 +1,3 @@
-#! /usr/bin/env python
-# -*- coding: utf-8 -*-
-
 from defs import *
 from scaner import Scaner
 from tree_2 import *
@@ -187,7 +184,6 @@ class Diagram():
 			v1 = self.__tree.semGetType(''.join(self.scaner.get_lex()))
 			v = self.__tree.semGetFunct(''.join(self.scaner.get_lex()))
 			if ( type(v) == str and type(v1) == str ):
-				self.__tree.print()
 				_type = self.scaner.scan() #Получить текущую лексему
 				if ( _type == LBRACKET ):
 					self.scaner.printError(v)
@@ -365,4 +361,4 @@ class Diagram():
 			return
 
 	def printTree(self):
-		self.__tree.print()
+		self.__tree.printTree()

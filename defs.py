@@ -1,6 +1,3 @@
-#! /usr/bin/env python
-# -*- coding: utf-8 -*-
-
 #Общие типы данных и макроопределения
 MAX_TEXT = 10000
 MAX_LEX = 100

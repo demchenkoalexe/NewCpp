@@ -1,6 +1,3 @@
-#! /usr/bin/env python
-# -*- coding: utf-8 -*-
-
 from defs import *
 import copy
 
@@ -151,11 +148,11 @@ class Tree:
 			return "Не является функцией идентификатор " + str(a)
 		return v
 
-	def print(self):
+	def printTree(self):
 		for i in self.n:
 			if i.type_id == "-":
 				continue
 			for j in range(i.__lavel * 2):
-				print(' ', end = '')
+				print(" ", end="")
 			print(str(i.type_id) + ' (' + str(i.DataType) + ')')
 
