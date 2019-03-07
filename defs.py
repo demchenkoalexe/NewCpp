@@ -49,4 +49,11 @@ ERROR = 71
 
 UNKNOWN = 80
 
+FOR_PRINT = {1: 'INT', 2: '_INT64', 3: 'FOR', 4: 'VOID', 10: 'ID', 20: 'CONSTINT', 21: 'CONSTINT16', 
+			30: 'POINT', 31: 'COMMA', 32: 'SEMICOLON', 33: 'LBRACKET', 34: 'RBRACKET', 35: 'LBRACE', 
+			36: 'RBRACE', 37: 'LSBRACKET', 38: 'RSBRACKET', 40: 'LT', 41: 'LE', 42: 'GT', 43: 'GE', 
+			44: 'EQ', 45: 'NEQ', 46: 'PLUSEQ', 47: 'MINUSEQ', 48: 'DIVEQ', 49: 'MODEQ', 50: 'MULTEQ', 
+			51: 'PLUSPLUS', 52: 'MINUSMINUS', 53: 'PLUS', 54: 'MINUS', 55: 'MULT', 56: 'DIV', 57: 'MOD',
+			58: 'RMOVE', 59: 'LMOVE', 60: 'SAVE', 70: 'END', 71: 'ERROR'}
+
 IDENTITY = {1: 'int', 2: '_int64', 4: 'void'}

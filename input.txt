@@ -1,16 +1,31 @@
-int i, j = 0, m[];
-_int64 abc = 0x213, dkc = 0XFF4E; //VAAAAAAAAAAAAR
+//Выражения с массивами, функция выше параметров, 16-ричные маленькими
+
+
+int i, j = 0, m[] ;
+_int64 abc = 0x213, dkc = 0XFFFFFFFFFFFF; //VAAAAAAAAAAAAR
+
+void f() {
+	
+	int z = 10 / 0;
+}
 
 void main() 
 {
-	m[10] = 10;
+	m[j] = 10;
 	{
 		int k_er = 12;
+		{
+		//	int k_er1 = m[m[m[j++]]];
+		}
 	}
 	int k;
-	for ( i = 0; i < k; i ++ )
+	for ( i = 0; i < k; i ++ ) for (k =0; k < i; k++)
 	{
 		abc = abc >> 4;
+
+		f(); f(); ee();
+		abc = (m[10] + abc ) / 10 + abc*abc - m[0];
+
 		dkc = dkc << 5;
 		abc --;  
 		abc += 2;

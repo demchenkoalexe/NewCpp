@@ -83,6 +83,10 @@ class Tree:
 	def getCurrent(self):
 		return self.n[__next - 1].type_id
 
+	#Получить тип элемента a под номером num дерева
+	def getTreeLeaf(self, a, num):
+		return self.n[num].DataType
+
 	# Проверка идентификатора a на повторное описание внутри блока. 
 	# поиск вверх от ткущей вершины addr
 	def dupControl(self, addr, a):

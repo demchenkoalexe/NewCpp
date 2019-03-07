@@ -21,7 +21,7 @@ def main():
 	#Вывод всех лексем (реализация сканера)
 	while _type != END:
 		_type = scaner.scan()
-		print(_type, '-->', ''.join(scaner.get_lex()))
+		print('%-10s' % (FOR_PRINT[_type]), '-->\t', ''.join(scaner.get_lex()))
 
 	print('\nTree: ')
 	dg.printTree()

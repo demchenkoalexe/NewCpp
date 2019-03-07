@@ -198,8 +198,19 @@ class Diagram():
 					self.scaner.printError("ERROR! Expected right bracket.")
 			elif ( _type == LSBRACKET ):				
 				_type = self.scaner.scan() #Получить текущую лексему
-				if ( _type != CONSTINT and _type != CONSTINT16 ):
+				if ( _type != CONSTINT and _type != CONSTINT16 and _type != ID ):
 					self.scaner.printError("ERROR! The array has no index.")
+
+				#Индекс массива может быть только int и _int64
+				if ( _type == ID ):
+					# Поиск имени идентификатора в таблице
+					v = self.__tree.semGetType(''.join(self.scaner.get_lex()))
+					if ( type(v) == str ):
+						self.scaner.printError(v)
+					checkIndex = self.__tree.getTreeLeaf(''.join(self.scaner.get_lex()), v)
+					if ( checkIndex != 'int' and checkIndex != '_int64' ):
+						self.scaner.printError('ERROR! The index must be int or _int64.')
+
 				_type = self.scaner.scan() #Получить текущую лексему
 				if ( _type != RSBRACKET ):
 					self.scaner.printError("ERROR! Expected right square bracket.")
@@ -259,7 +270,7 @@ class Diagram():
 			_type = self.scaner.scan() #Получить текущую лексему
 			if ( _type == LSBRACKET ):
 				_type = self.scaner.scan() #Получить текущую лексему
-				if ( _type == CONSTINT16 or _type == CONSTINT ):
+				if ( _type == CONSTINT16 or _type == CONSTINT or _type == ID ):
 					_type = self.scaner.scan() #Получить текущую лексему
 					if ( _type == RSBRACKET ):
 						_type = self.scaner.scan() #Получить текущую лексему
