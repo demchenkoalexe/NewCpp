@@ -18,12 +18,12 @@ void main()
 		//	int k_er1 = m[m[m[j++]]];
 		}
 	}
-	int k;
-	for ( i = 0; i < k; i ++ ) for (k =0; k < i; k++)
+	int k = 8;
+	for ( i = 0; i < k; i ++ )
 	{
 		abc = abc >> 4;
 
-		f(); f(); ee();
+		f(); f();
 		abc = (m[10] + abc ) / 10 + abc*abc - m[0];
 
 		dkc = dkc << 5;
