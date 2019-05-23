@@ -6,15 +6,11 @@ def main():
 	_type = '' #Тип лексемы
 
 	#Ввод файла в программу
-	original_file = open('input.txt')
+	original_file = open('input1.txt')
 	text_file = original_file.read(MAX_TEXT)
 	text_file = text_file + '\0' #добавим концевой ноль в конец исходного файла
 	print(text_file)
 	original_file.close()
-
-	# Синтаксический анализатор
-	dg = Diagram(text_file)
-	dg.S()
 
 	scaner = Scaner(text_file) #Инициализация сканера
 	print ("\nScaner: ")
@@ -22,6 +18,10 @@ def main():
 	while _type != END:
 		_type = scaner.scan()
 		print('%-10s' % (FOR_PRINT[_type]), '-->\t', ''.join(scaner.get_lex()))
+
+	# Синтаксический анализатор
+	dg = Diagram(text_file)
+	dg.S()
 
 	print('\nTree: ')
 	dg.printTree()

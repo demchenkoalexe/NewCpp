@@ -1,0 +1,8 @@
+int idfs = 10;
+
+void main() {
+	int i, a, b;
+	i = 2;
+	a = 1;
+	b = a + i;
+}

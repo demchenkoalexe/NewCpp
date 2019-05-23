@@ -86,7 +86,8 @@ class Scaner():
 			self._lex.append(self.text_file[self.current_position + 1])
 			self.current_position += 2
 			while ( ( self.text_file[self.current_position] <= '9' and self.text_file[self.current_position] >= '0' ) 
-				or ( self.text_file[self.current_position] <= 'F' and self.text_file[self.current_position] >= 'A' ) ):
+				or ( self.text_file[self.current_position] <= 'F' and self.text_file[self.current_position] >= 'A' ) 
+				or ( self.text_file[self.current_position] <= 'f' and self.text_file[self.current_position] >= 'a' ) ):
 				self._lex.append(self.text_file[self.current_position])
 				self.current_position += 1
 			return CONSTINT16

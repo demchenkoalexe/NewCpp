@@ -10,6 +10,7 @@ class Node:
 		self.DataType = EMPTY #тип значения
 		self.data = None #значение
 		self.__lavel = 0 # для печати дерева 
+		self.position = 0 #позиция функции
 
 class Tree:
 	def __init__(self):
@@ -95,7 +96,7 @@ class Tree:
 		return True
 
 	# Занесение идентификатора a в таблицу с типом t
-	def semInclude(self, a, t):
+	def semInclude(self, a, t, position):
 		if ( self.dupControl(self.__next - 1, a) ):
 			return "Повторное описание идентификатора " + str(a)
 		newID = Node()
@@ -103,12 +104,14 @@ class Tree:
 			newID.type_id = a
 			newID.DataType = t
 			newID.__lavel = self.__lavel
+			newID.position = position
 			self.setLeft(self.__parent, newID)   # создали вершину - переменную
 			return self.__next - 1
 		else:
 			newID.type_id = a
 			newID.DataType = t
 			newID.__lavel = self.__lavel
+			newID.position = position
 			self.setLeft(self.__parent, newID) # создали вершину - функцию
 			return self.__next - 1
 
@@ -131,6 +134,12 @@ class Tree:
 	#Установить тип t для переменной по адресу addr
 	def semSetType(self, addr, t):
 		self.n[addr].type_id = t
+
+	#Установить значение value для переменной по расположению position
+	def setData(self, position, value):
+		for i in self.n:
+			if i.position == position:
+				i.data = value
 
 	# Найти в таблице переменную с именем a
 	# и вернуть ссылку на соответсвующий элемент дерева
@@ -159,4 +168,3 @@ class Tree:
 			for j in range(i.__lavel * 2):
 				print(" ", end="")
 			print(str(i.type_id) + ' (' + str(i.DataType) + ')')
-

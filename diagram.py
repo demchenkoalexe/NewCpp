@@ -7,7 +7,7 @@ class Diagram():
 		self.scaner = Scaner(text_file) #Инициализация сканера
 		self.__tree = Tree()  # инициализация семантического дерева
 		self.curType = '' # текущий тип идентификатора для синтаксического дерева
-
+		
 	#Описания
 	def S(self):
 		_type = '' #Тип лексемы
@@ -81,13 +81,13 @@ class Diagram():
 		if ( _type == LSBRACKET ):
 			_type = self.scaner.scan() #Получить текущую лексему
 			# Занесение идентификатора массива в таблицу с типом curType
-			v = self.__tree.semInclude(''.join(self.scaner.get_lex()), self.curType + str('[]'))
+			v = self.__tree.semInclude(''.join(self.scaner.get_lex()), self.curType + str('[]'), c_p)
 			if ( type(v) == str ):
 				self.scaner.printError(v)
 		else:
 			_type = self.scaner.scan() #Получить текущую лексему
 			# Занесение идентификатора в таблицу с типом curType
-			v = self.__tree.semInclude(''.join(self.scaner.get_lex()), self.curType)
+			v = self.__tree.semInclude(''.join(self.scaner.get_lex()), self.curType, c_p)
 			if ( type(v) == str ):
 				self.scaner.printError(v)
 
@@ -125,8 +125,9 @@ class Diagram():
 		if ( _type != ID ):
 			self.scaner.printError("ERROR! Expected identifier.")
 
+		c_p = self.scaner.get_current_position() #Запомнить текущую позицию
 		# Занесение имя функции в таблицу
-		v = self.__tree.semInclude(''.join(self.scaner.get_lex()), IDENTITY[VOID])
+		v = self.__tree.semInclude(''.join(self.scaner.get_lex()), IDENTITY[VOID], c_p)
 		if ( type(v) == str ):
 			self.scaner.printError(v)
 
@@ -196,20 +197,8 @@ class Diagram():
 				_type = self.scaner.scan() #Получить текущую лексему
 				if ( _type != RBRACKET ):
 					self.scaner.printError("ERROR! Expected right bracket.")
-			elif ( _type == LSBRACKET ):				
-				_type = self.scaner.scan() #Получить текущую лексему
-				if ( _type != CONSTINT and _type != CONSTINT16 and _type != ID ):
-					self.scaner.printError("ERROR! The array has no index.")
-
-				#Индекс массива может быть только int и _int64
-				if ( _type == ID ):
-					# Поиск имени идентификатора в таблице
-					v = self.__tree.semGetType(''.join(self.scaner.get_lex()))
-					if ( type(v) == str ):
-						self.scaner.printError(v)
-					checkIndex = self.__tree.getTreeLeaf(''.join(self.scaner.get_lex()), v)
-					if ( checkIndex != 'int' and checkIndex != '_int64' ):
-						self.scaner.printError('ERROR! The index must be int or _int64.')
+			elif ( _type == LSBRACKET ):	
+				self.A()
 
 				_type = self.scaner.scan() #Получить текущую лексему
 				if ( _type != RSBRACKET ):
@@ -269,11 +258,10 @@ class Diagram():
 			c_p = self.scaner.get_current_position() #Запомнить текущую позицию
 			_type = self.scaner.scan() #Получить текущую лексему
 			if ( _type == LSBRACKET ):
+				self.A()
 				_type = self.scaner.scan() #Получить текущую лексему
-				if ( _type == CONSTINT16 or _type == CONSTINT or _type == ID ):
+				if ( _type == RSBRACKET ):
 					_type = self.scaner.scan() #Получить текущую лексему
-					if ( _type == RSBRACKET ):
-						_type = self.scaner.scan() #Получить текущую лексему
 			else:
 				self.scaner.set_current_position(c_p) #Вернуть старую позицию
 				_type = self.scaner.scan() #Получить текущую лексему
@@ -304,10 +292,16 @@ class Diagram():
 		_type = self.scaner.scan() #Получить текущую лексему
 		if ( _type != PLUS and _type != MINUS ):
 			self.scaner.set_current_position(c_p) #Вернуть старую позицию
+		if ( _type == PLUSPLUS or _type == MINUSMINUS ):
+			c_p = self.scaner.get_current_position() #Запомнить текущую позицию
+			_type = self.scaner.scan() #Получить текущую лексему
 
 		self.B()
 		c_p = self.scaner.get_current_position() #Запомнить текущую позицию
 		_type = self.scaner.scan() #Получить текущую лексему
+
+		if ( _type == PLUSPLUS or _type == MINUSMINUS ):
+			return
 
 		while ( (_type >= LT and _type <= NEQ) or _type == RMOVE or _type == LMOVE ):
 			self.B()
@@ -373,3 +367,6 @@ class Diagram():
 
 	def printTree(self):
 		self.__tree.printTree()
+
+	def getTree(self):
+		return self.__tree
