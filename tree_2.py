@@ -104,7 +104,6 @@ class Tree:
 			newID.type_id = a
 			newID.DataType = t
 			newID.__lavel = self.__lavel
-			newID.position = position
 			self.setLeft(self.__parent, newID)   # создали вершину - переменную
 			return self.__next - 1
 		else:
@@ -131,24 +130,26 @@ class Tree:
 		self.__parent = i - 1
 		self.__lavel -= 1
 
-	#Установить тип t для переменной по адресу addr
-	def semSetType(self, addr, t):
-		self.n[addr].type_id = t
+	#Установить значение v для переменной по адресу addr
+	def semSetData(self, addr, v):
+		self.n[addr].data = v
 
-	#Установить значение value для переменной по расположению position
-	def setData(self, position, value):
-		for i in self.n:
-			if i.position == position:
-				i.data = value
+	# Получить значение переменной по адресу addr
+	def getData(self, addr):
+		return self.n[addr].data	
+
+	# Получить тип переменной по адресу addr
+	def getType(self, addr):
+		return self.n[addr].type_id	
 
 	# Найти в таблице переменную с именем a
 	# и вернуть ссылку на соответсвующий элемент дерева
 	def semGetType(self, a):
 		v = self.findUp(self.__next - 1, a)
 		if ( v == EMPTY ):
-			return "Отсутсвует описание идентификатора " + str(a)
+			return "Missing description identifier " + str(a)
 		if ( self.n[v].DataType == IDENTITY[VOID] ):
-			return "Неверное использование вызова функции " + str(a)
+			return "Incorrect use of function call " + str(a)
 		return v
 
 	# Найти в таблице функцию с именем a
@@ -156,9 +157,9 @@ class Tree:
 	def semGetFunct(self, a):
 		v = self.findUp(self.__next - 1, a)
 		if ( v == EMPTY ):
-			return "Отсутсвует описание функции " + str(a)
+			return "Missing description function " + str(a)
 		if ( self.n[v].DataType != IDENTITY[VOID] ):
-			return "Не является функцией идентификатор " + str(a)
+			return "Not a function identifier " + str(a)
 		return v
 
 	def printTree(self):
